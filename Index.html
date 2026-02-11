@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🚀 How Are We Using Copilot? — Team Feedback Showcase</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* ================================
+           FLAT, NO-GRADIENT THEME
+           Accent: Navy (#00014f) + Neutrals
+           ================================ */
+        :root {
+            --primary: #00014f;          /* navy */
+            --primary-contrast: #ffffff; /* text on primary */
+            --primary-hover: #0b1453;    /* slightly darker navy */
+
+            --page-bg: #f6f7fb;          /* soft neutral page */
+            --card-bg: #ffffff;
+            --border: #e2e8f0;           /* light border */
+
+            --text-dark: #1f2937;        /* headings */
+            --text-medium: #475569;      /* body text */
+            --text-light: #94a3b8;       /* meta, labels */
+
+            --chip-bg: #f1f5f9;          /* tag bg */
+            --chip-border: #e2e8f0;      /* tag border */
+            --icon-bg: #f3f4f6;          /* category icon bg */
+
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--page-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* ===== HERO (solid fill, no gradients) ===== */
+        .hero {
+            background: var(--primary);
+            color: var(--primary-contrast);
+            padding: 3.5rem 2rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 750px; margin: 0 auto; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .hero .subtitle { font-size: 1.05rem; opacity: 0.98; font-weight: 300; }
+        .hero .meta { margin-top: 1.2rem; font-size: 0.85rem; opacity: 0.9; }
+        .hero .meta span { margin: 0 0.5rem; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .stat-card .stat-label {
+            font-size: 0.8rem; color: var(--text-light);
+            text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 0.2rem;
+        }
+
+        .toolbar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+        .toolbar-section { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .toolbar-label {
+            font-size: 0.78rem; font-weight: 700; color: var(--text-light);
+            text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+        }
+        .toolbar-divider { width: 1px; height: 28px; background: var(--border); margin: 0 0.25rem; }
+        .toolbar-spacer { flex: 1; }
+
+        .filter-btn {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.4rem 0.85rem; border-radius: 999px;
+            border: 1.5px solid var(--border);
+            background: var(--card-bg); color: var(--text-medium);
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+            font-family: inherit; white-space: nowrap;
+        }
+        .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--primary-contrast); border-color: var(--primary);
+        }
+        .filter-btn .filter-count {
+            font-size: 0.7rem; background: rgba(0,0,0,0.06);
+            padding: 0.05rem 0.4rem; border-radius: 999px;
+        }
+        .filter-btn.active .filter-count { background: rgba(255,255,255,0.25); }
+
+        .search-box {
+            display: flex; align-items: center;
+            background: var(--page-bg); border: 1.5px solid var(--border);
+            border-radius: 8px; padding: 0.4rem 0.75rem;
+            gap: 0.4rem; transition: border-color 0.2s; min-width: 200px;
+        }
+        .search-box:focus-within { border-color: var(--primary); }
+        .search-box svg { color: var(--text-light); flex-shrink: 0; }
+        .search-box input {
+            border: none; background: transparent; outline: none;
+            font-size: 0.85rem; font-family: inherit; color: var(--text-dark); width: 100%;
+        }
+        .search-box input::placeholder { color: var(--text-light); }
+
+        .export-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.5rem 1.1rem; border-radius: 8px; border: 1px solid var(--primary);
+            background: var(--primary); color: var(--primary-contrast); font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+        }
+        .export-btn:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .export-btn:active { transform: translateY(0); }
+
+        .toggle-all-btn {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.4rem 0.85rem; border-radius: 8px;
+            border: 1.5px solid var(--border); background: var(--card-bg);
+            color: var(--text-medium); font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+        }
+        .toggle-all-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .active-filters-bar {
+            display: none; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;
+            padding: 0.6rem 1rem; background: #eef2ff; /* subtle blue-tint band */
+            border: 1px solid #dbeafe; border-radius: 8px;
+            font-size: 0.82rem; color: var(--primary);
+        }
+        .active-filters-bar.visible { display: flex; flex-wrap: wrap; }
+        .active-filters-bar .clear-filters {
+            margin-left: auto; background: none; border: none; color: var(--primary);
+            font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.82rem; text-decoration: underline;
+        }
+
+        .no-results {
+            display: none; text-align: center; padding: 3rem 1rem; color: var(--text-light); font-size: 1rem;
+        }
+        .no-results.visible { display: block; }
+        .no-results .no-results-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+        .category { margin-bottom: 1rem; }
+        .category.hidden { display: none; }
+
+        .category-header {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.85rem 1.25rem; background: var(--card-bg);
+            border-radius: 10px; box-shadow: var(--shadow); cursor: pointer;
+            transition: box-shadow 0.2s ease; user-select: none; border: 1px solid var(--border);
+        }
+        .category-header:hover { box-shadow: var(--shadow-md); }
+
+        .category-icon {
+            width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem; flex-shrink: 0;
+            background: var(--icon-bg); color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .category-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); flex: 1; }
+        .category-header .count {
+            background: var(--chip-bg); color: var(--text-medium); font-size: 0.75rem; font-weight: 700;
+            padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid var(--chip-border);
+        }
+        .category-header .chevron { color: var(--text-light); transition: transform 0.3s ease; flex-shrink: 0; }
+        .category.collapsed .chevron { transform: rotate(-90deg); }
+
+        .category-body {
+            max-height: 5000px; overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+            opacity: 1; padding-top: 0.75rem;
+        }
+        .category.collapsed .category-body { max-height: 0; opacity: 0; padding-top: 0; }
+
+        .feedback-card {
+            background: var(--card-bg); border-radius: 10px;
+            padding: 1.5rem 1.75rem; margin-bottom: 0.6rem; box-shadow: var(--shadow);
+            border: 1px solid var(--border); transition: box-shadow 0.2s ease;
+        }
+        .feedback-card:hover { box-shadow: var(--shadow-md); }
+        .feedback-card.hidden { display: none; }
+
+        .feedback-card .card-title {
+            font-size: 0.95rem; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .feedback-card .card-body { font-size: 0.9rem; color: var(--text-medium); line-height: 1.7; }
+        .feedback-card .card-body p { margin-bottom: 0.5rem; }
+        .feedback-card .card-body p:last-child { margin-bottom: 0; }
+
+        /* Brand-aligned, flat highlight (no gradient) */
+        .highlight-quote {
+            background: #f8fafc;
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0;
+            font-style: italic;
+            font-size: 0.88rem;
+            color: var(--text-medium);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Tags (neutral, flat) */
+        .tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.12rem 0.55rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            background: var(--chip-bg);
+            border: 1px solid var(--chip-border);
+            color: var(--text-medium);
+        }
+        .tag-m365 { }
+        .tag-web { }
+        .tag-general { }
+
+        /* Takeaway (flat, solid) */
+        .takeaway {
+            background: var(--primary);
+            color: var(--primary-contrast);
+            border-radius: 12px;
+            padding: 2.2rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .takeaway h2 { font-size: 1.3rem; margin-bottom: 0.75rem; }
+        .takeaway p { font-size: 0.95rem; opacity: 0.96; max-width: 650px; margin: 0 auto; line-height: 1.7; }
+
+        .footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: var(--text-light); }
+
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            background: #111827; color: #fff; padding: 0.85rem 1.5rem; border-radius: 10px;
+            font-size: 0.88rem; font-weight: 600; box-shadow: var(--shadow-lg);
+            transform: translateY(100px); opacity: 0; transition: all 0.3s ease; z-index: 1000;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .toast.visible { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 700px) {
+            .hero { padding: 2.5rem 1.25rem 2rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .container { padding: 1.25rem 1rem 3rem; }
+            .feedback-card { padding: 1.25rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .toolbar { padding: 1rem; gap: 0.75rem; }
+            .toolbar-divider { display: none; }
+            .search-box { min-width: 100%; }
+            .toolbar-spacer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1>🚀 How Are We Using Copilot?</h1>
+            <p class="subtitle">Real examples from across the team — Let's Share &amp; Learn!</p>
+            <p class="meta"><span>Strategic Execution</span> · <span>February 2026</span></p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number">9</div>
+                <div class="stat-label">Contributors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">34</div>
+                <div class="stat-label">Use Cases</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">7</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Platforms (M365 &amp; Web)</div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <span class="toolbar-label">Category:</span>
+                <button class="filter-btn active" data-filter-type="category" data-filter="all" onclick="toggleFilter(this)">All <span class="filter-count">34</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="drafting" onclick="toggleFilter(this)">✍️ Drafting <span class="filter-count">8</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="data" onclick="toggleFilter(this)">📊 Data <span class="filter-count">6</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="meetings" onclick="toggleFilter(this)">📅 Meetings <span class="filter-count">5</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="analysis" onclick="toggleFilter(this)">🔍 Analysis <span class="filter-count">4</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="discovery" onclick="toggleFilter(this)">💡 Discovery <span class="filter-count">5</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="governance" onclick="toggleFilter(this)">🏗️ Governance <span class="filter-count">4</span></button>
+                <button class="filter-btn" data-filter-type="category" data-filter="navigation" onclick="toggleFilter(this)">🧭 Navigation <span class="filter-count">2</span></button>
+            </div>
+
+            <div class="toolbar-divider"></div>
+
+            <div class="toolbar-section">
+                <span class="toolbar-label">Platform:</span>
+                <button class="filter-btn active" data-filter-type="platform" data-filter="all" onclick="togglePlatform(this)">All</button>
+                <button class="filter-btn" data-filter-type="platform" data-filter="m365" onclick="togglePlatform(this)">M365</button>
+                <button class="filter-btn" data-filter-type="platform" data-filter="web" onclick="togglePlatform(this)">Web</button>
+                <button class="filter-btn" data-filter-type="platform" data-filter="general" onclick="togglePlatform(this)">General</button>
+            </div>
+
+            <div class="toolbar-spacer"></div>
+
+            <div class="toolbar-section">
+                <div class="search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="searchInput" placeholder="Search feedback..." oninput="applyFilters()">
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <button class="toggle-all-btn" id="toggleAllBtn" onclick="toggleAllSections()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+                    Collapse All
+                </button>
+                <button class="export-btn" onclick="exportToExcel()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Export to Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="active-filters-bar" id="activeFiltersBar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span id="activeFiltersText">Filtered</span>
+            <span id="filteredCount"></span>
+            <button class="clear-filters" onclick="clearAllFilters()">Clear all filters</button>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <div class="no-results-icon">🔍</div>
+            <p>No feedback matches your current filters.<br>Try adjusting your search or category selection.</p>
+        </div>
+
+        <!-- ===== CATEGORIES & CARDS (contributors removed) ===== -->
+        <!-- DRAFTING -->
+        <div class="category cat-drafting" data-category="drafting">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">✍️</div>
+                <h2>Drafting, Writing &amp; Communication</h2>
+                <span class="count category-count">8</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="drafting" data-platform="m365">
+                    <div class="card-title"><span>Drafting &amp; Polishing Content in Own Voice</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>I use Copilot heavily to draft and polish emails, articles, and comms in my own voice. A common pattern for me is asking Copilot to "polish this" and then "what am I actually trying to say here?" — it's been great for clarity, tone, and reducing rework.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="m365">
+                    <div class="card-title"><span>Drafting New Clauses for Standards</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>I used Copilot to draft new clauses for an existing standard, based on equivalent clauses from two comparable standards available on Policy Hub. It quickly provided a solid foundation within a minute.</p><p>And then proofreading this example before posting.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Drafting &amp; Refining Written Communication</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Copilot has helped me draft and polish emails and written responses, particularly where clarity, tone or conciseness matters. I often use it to improve structure and wording rather than generate content from scratch.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Executive‑Level Communications</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Accelerating first drafts of slides, problem statements and comms, then refining tone and intent myself.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Concepts &amp; First Drafts for Initiatives</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I've used Copilot to do the heavy lifting on first drafts for initiatives and concepts (e.g. activity ideas, rules, artefacts), with me setting the intent and then refining from there. It's been a big time‑saver at the "blank page" stage.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Rewriting Scribbles into Polished Content</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Rewriting my scribbles — turning rough, informal notes into clean, shareable content quickly.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Drafting Requirements for Roles</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Drafting requirements for roles — getting a solid first version of role descriptions and requirements quickly.</p></div>
+                </div>
+                <div class="feedback-card" data-category="drafting" data-platform="general">
+                    <div class="card-title"><span>Self‑Reflective Copilot Usage Summary</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body">
+                        <p>I asked Copilot to write my feedback response using all the other prompts I have used — so I guess that is another use case?</p>
+                        <div class="highlight-quote">"P.S. I asked co‑pilot to write this for me using all the other prompts I have used, so I guess that is another use case?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA -->
+        <div class="category cat-data" data-category="data">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">📊</div>
+                <h2>Data, Excel &amp; Analytics</h2>
+                <span class="count category-count">6</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="data" data-platform="m365">
+                    <div class="card-title"><span>Excel Formulas &amp; Conditional Formatting</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>Working within Excel in creating or correcting formulations and conditional formatting.</p></div>
+                </div>
+                <div class="feedback-card" data-category="data" data-platform="web">
+                    <div class="card-title"><span>SQL Coding for Atlassian Analytics Dashboards</span> <span class="tag tag-web">Web</span></div>
+                    <div class="card-body"><p>Creating and refining SQL coding — which I'm terribly untrained in(!) — to assist in some instances whilst creating Atlassian Analytics dashboards.</p></div>
+                </div>
+                <div class="feedback-card" data-category="data" data-platform="m365">
+                    <div class="card-title"><span>Excel Formulas, JQL &amp; Dashboard Logic</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>Copilot is my go‑to for Excel formulas and problem‑solving, and I've also used it to help analyse JQL and logic when working on dashboards and analytics (e.g. sanity‑checking assumptions, spotting anomalies, and accelerating troubleshooting).</p></div>
+                </div>
+                <div class="feedback-card" data-category="data" data-platform="m365">
+                    <div class="card-title"><span>Excel &amp; Data Problem‑Solving</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>I've used Copilot to help create, correct and explain Excel formulas, sanity‑check logic, and explore data when I know the outcome I need but not the cleanest way to get there. It's been useful as a problem‑solving partner rather than a replacement for analysis.</p></div>
+                </div>
+                <div class="feedback-card" data-category="data" data-platform="general">
+                    <div class="card-title"><span>Data Cleaning &amp; Transformation</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Useful to quickly clean data to meet requirements of different tools such as Jira to then be bulk uploaded.</p></div>
+                </div>
+                <div class="feedback-card" data-category="data" data-platform="general">
+                    <div class="card-title"><span>Visualisation &amp; Reporting Assistance</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Great to be able to provide it an outcome and rough structure of how you want to depict information for it to then suggest some common formats or even colour schemes to be used.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEETINGS -->
+        <div class="category cat-meetings" data-category="meetings">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">📅</div>
+                <h2>Meetings, Minutes &amp; Prep</h2>
+                <span class="count category-count">5</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="meetings" data-platform="m365">
+                    <div class="card-title"><span>Meeting Minutes &amp; Actions — Real Time Savings</span> <span class="tag tag-m365">M365</span></div>
+                    <div class="card-body"><p>I now exclusively use Copilot to draft meeting minutes and actions. What used to take ~15–30 minutes per meeting now takes closer to 2–5 minutes to review and refine — a big time saver across a busy delivery week.</p></div>
+                </div>
+                <div class="feedback-card" data-category="meetings" data-platform="general">
+                    <div class="card-title"><span>SteerCo &amp; Exec Meeting Prep</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>For SteerCo meetings, I've used Copilot to prepare role‑specific questions I'm likely to be asked (e.g. sponsor, finance, tech), based on the agenda and artefacts. This has helped me pressure‑test my thinking in advance and walk into the room far better prepared.</p></div>
+                </div>
+                <div class="feedback-card" data-category="meetings" data-platform="general">
+                    <div class="card-title"><span>Meeting Prep — Agendas &amp; Summaries</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Prep for meetings more efficiently by asking Copilot to help me structure agendas, discussion prompts, or summaries based on previous notes or documents.</p></div>
+                </div>
+                <div class="feedback-card" data-category="meetings" data-platform="general">
+                    <div class="card-title"><span>Meeting Notes &amp; Actions</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Meeting notes &amp; actions — quickly capturing and structuring meeting outputs with minimal effort.</p></div>
+                </div>
+                <div class="feedback-card" data-category="meetings" data-platform="general">
+                    <div class="card-title"><span>Quicker Summaries &amp; Clearer Actions</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Meeting efficiency — quicker summaries, clearer actions, and less rework post‑discussion.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYSIS -->
+        <div class="category cat-analysis" data-category="analysis">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">🔍</div>
+                <h2>Summarising, Synthesising &amp; Analysis</h2>
+                <span class="count category-count">4</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="analysis" data-platform="general">
+                    <div class="card-title"><span>Summarising &amp; Synthesising Content</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I've asked Copilot to summarise documents, extract key points, and condense longer material into clear, executive‑ready views. This includes pulling out actions, risks or themes to support decision‑making and stakeholder conversations.</p></div>
+                </div>
+                <div class="feedback-card" data-category="analysis" data-platform="general">
+                    <div class="card-title"><span>Summarise &amp; Sense‑Check Complex Information</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Pulling key themes, risks and actions out of long documents, Jira updates, or meeting notes so I can get to the "so what" much faster.</p></div>
+                </div>
+                <div class="feedback-card" data-category="analysis" data-platform="general">
+                    <div class="card-title"><span>Structuring &amp; Drafting Analysis Artefacts</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I regularly use Copilot to help turn unstructured inputs (notes, documents, legislation or ideas) into something more usable — for example drafting summaries, outlining key themes, or producing first‑cut business analysis artefacts that I then refine. This has been especially helpful for getting to a clear starting point faster.</p></div>
+                </div>
+                <div class="feedback-card" data-category="analysis" data-platform="general">
+                    <div class="card-title"><span>Strategic Analysis &amp; Sense‑Making</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Synthesising large volumes of notes, stakeholder inputs and portfolio data to surface key themes and patterns.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCOVERY -->
+        <div class="category cat-discovery" data-category="discovery">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">💡</div>
+                <h2>Thinking, Problem‑Solving &amp; Discovery</h2>
+                <span class="count category-count">5</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="discovery" data-platform="general">
+                    <div class="card-title"><span>Thinking Support &amp; Framing</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I've used Copilot to help me think through how to approach a problem — for example, framing a response, sense‑checking an idea, or exploring different ways to present information depending on audience.</p></div>
+                </div>
+                <div class="feedback-card" data-category="discovery" data-platform="general">
+                    <div class="card-title"><span>Challenging Assumptions &amp; Spotting Gaps</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Think through problems by asking it to challenge assumptions, suggest alternative angles, or highlight gaps in logic before I socialise work more broadly.</p></div>
+                </div>
+                <div class="feedback-card" data-category="discovery" data-platform="general">
+                    <div class="card-title"><span>Translate Messy Inputs into Clear Outputs</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Turning rough notes, bullet points, or half‑formed ideas into something structured and ready to share.</p></div>
+                </div>
+                <div class="feedback-card" data-category="discovery" data-platform="general">
+                    <div class="card-title"><span>Training &amp; Facilitation Improvement</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>After delivering training sessions, I've fed transcripts into Copilot to get feedback on structure, repetition, and complexity. I've then asked it to generate updated facilitator notes, which I've used in subsequent sessions with a noticeable improvement in flow and focus.</p></div>
+                </div>
+                <div class="feedback-card" data-category="discovery" data-platform="general">
+                    <div class="card-title"><span>Rapid Onboarding to New Projects</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I created a Copilot Notebook, uploaded all the business and legal background for a project I'd just been assigned to, and Copilot generated the content for a structured pack in minutes — executive summary, high‑level scope, key process impacts, assumptions requiring validation, and targeted follow‑up questions for stakeholders. It let me get across the initiative quickly and start adding value almost immediately.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GOVERNANCE -->
+        <div class="category cat-governance" data-category="governance">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-icon">🏗️</div>
+                <h2>Governance, Delivery &amp; Stakeholder Tools</h2>
+                <span class="count category-count">4</span>
+                <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="category-body">
+                <div class="feedback-card" data-category="governance" data-platform="general">
+                    <div class="card-title"><span>End‑of‑Discovery RACI &amp; Ownership Clarity</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>When preparing for my end‑of‑discovery showcase in December, I used Copilot to create a clear RACI based on context and input I had provided over time. It helped lock in ownership, surface gaps early, and made stakeholder conversations much more concrete and outcome‑focused.</p></div>
+                </div>
+                <div class="feedback-card" data-category="governance" data-platform="general">
+                    <div class="card-title"><span>Clear Visuals for Stakeholders (Copilot Create)</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>I've used Copilot Create to build IAG‑branded project milestone visuals and roadmaps, which has made it much easier to communicate delivery progress and timelines in a way that's clear and exec‑friendly.</p></div>
+                </div>
+                <div class="feedback-card" data-category="governance" data-platform="general">
+                    <div class="card-title"><span>Governance &amp; VMF Support</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Exploring how AI can help scale consistency and assurance (with strong guardrails).</p></div>
+                </div>
+                <div class="feedback-card" data-category="governance" data-platform="general">
+                    <div class="card-title"><span>First Drafts for Status Updates &amp; RAID Summaries</span> <span class="tag tag-general">General</span></div>
+                    <div class="card-body"><p>Draft first versions of content like status updates, RAID summaries, executive‑level talking points, and emails. I still refine everything, but it saves a lot of blank‑page time.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaway" id="takeawaySection">
+            <h2>💎 The Big Takeaway</h2>
+            <p>Copilot works best when it's used to <strong>accelerate clarity</strong>, while keeping <strong>accountability and judgement firmly human</strong>. The team consistently uses it as a <em>thinking partner</em> — speeding up drafting, improving quality, and freeing up time to focus on judgement, design, and stakeholder work.</p>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>Strategic Execution Team · February 2026</p>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- XLSX for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        let activeCategory = 'all';
+        let activePlatform = 'all';
+        let allCollapsed = false;
+
+        const categoryNames = {
+            drafting: 'Drafting, Writing & Communication',
+            data: 'Data, Excel & Analytics',
+            meetings: 'Meetings, Minutes & Prep',
+            analysis: 'Summarising, Synthesising & Analysis',
+            discovery: 'Thinking, Problem-Solving & Discovery',
+            governance: 'Governance, Delivery & Stakeholder Tools',
+            navigation: 'Navigation & Finding Information'
+        };
+
+        const platformNames = { m365: 'M365', web: 'Web', general: 'General' };
+
+        function toggleCategory(headerEl) {
+            headerEl.closest('.category').classList.toggle('collapsed');
+            updateToggleAllButton();
+        }
+
+        function updateToggleAllButton() {
+            const visible = document.querySelectorAll('.category:not(.hidden)');
+            const collapsed = document.querySelectorAll('.category:not(.hidden).collapsed');
+            const btn = document.getElementById('toggleAllBtn');
+            if (visible.length > 0 && collapsed.length === visible.length) {
+                allCollapsed = true;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg> Expand All';
+            } else {
+                allCollapsed = false;
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Collapse All';
+            }
+        }
+
+        function toggleAllSections() {
+            const cats = document.querySelectorAll('.category:not(.hidden)');
+            cats.forEach(c => allCollapsed ? c.classList.remove('collapsed') : c.classList.add('collapsed'));
+            allCollapsed = !allCollapsed;
+            updateToggleAllButton();
+        }
+
+        function toggleFilter(btn) {
+            document.querySelectorAll('[data-filter-type="category"]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeCategory = btn.dataset.filter;
+            applyFilters();
+        }
+
+        function togglePlatform(btn) {
+            document.querySelectorAll('[data-filter-type="platform"]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activePlatform = btn.dataset.filter;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.feedback-card');
+            const categories = document.querySelectorAll('.category');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const matchCat = activeCategory === 'all' || card.dataset.category === activeCategory;
+                const matchPlat = activePlatform === 'all' || card.dataset.platform === activePlatform;
+                const matchSearch = !searchTerm || card.textContent.toLowerCase().includes(searchTerm);
+                if (matchCat && matchPlat && matchSearch) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            categories.forEach(cat => {
+                const vis = cat.querySelectorAll('.feedback-card:not(.hidden)');
+                if (vis.length === 0) {
+                    cat.classList.add('hidden');
+                } else {
+                    cat.classList.remove('hidden');
+                    cat.querySelector('.category-count').textContent = vis.length;
+                }
+            });
+
+            const bar = document.getElementById('activeFiltersBar');
+            const isFiltered = activeCategory !== 'all' || activePlatform !== 'all' || searchTerm;
+            if (isFiltered) {
+                bar.classList.add('visible');
+                const parts = [];
+                if (activeCategory !== 'all') parts.push('Category: ' + (categoryNames[activeCategory] || activeCategory));
+                if (activePlatform !== 'all') parts.push('Platform: ' + (platformNames[activePlatform] || activePlatform));
+                if (searchTerm) parts.push('Search: "' + searchTerm + '"');
+                document.getElementById('activeFiltersText').textContent = parts.join(' · ');
+                document.getElementById('filteredCount').textContent = ' — ' + visibleCount + ' result' + (visibleCount !== 1 ? 's' : '');
+            } else {
+                bar.classList.remove('visible');
+            }
+
+            document.getElementById('noResults').classList.toggle('visible', visibleCount === 0);
+            document.getElementById('takeawaySection').style.display = visibleCount === 0 ? 'none' : '';
+            updateToggleAllButton();
+        }
+
+        function clearAllFilters() {
+            activeCategory = 'all';
+            activePlatform = 'all';
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('[data-filter-type="category"]').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === 'all');
+            });
+            document.querySelectorAll('[data-filter-type="platform"]').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === 'all');
+            });
+            applyFilters();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = message;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+
+        function exportToExcel() {
+            const cards = document.querySelectorAll('.feedback-card:not(.hidden)');
+            const data = [];
+
+            cards.forEach(card => {
+                const titleEl = card.querySelector('.card-title span:first-child');
+                const bodyEl = card.querySelector('.card-body');
+
+                const title = titleEl ? titleEl.textContent.trim() : '';
+                let bodyText = '';
+                bodyEl.querySelectorAll('p').forEach(p => { 
+                    if (!p.classList.contains('highlight-quote')) {
+                        bodyText += p.textContent.trim() + ' '; 
+                    }
+                });
+                bodyText = bodyText.trim();
+
+                const category = categoryNames[card.dataset.category] || card.dataset.category;
+                const platform = (platformNames[card.dataset.platform] || card.dataset.platform).toUpperCase();
+
+                data.push({
+                    'Use Case': title,
+                    'Description': bodyText,
+                    'Category': category,
+                    'Platform': platform
+                });
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Copilot Use Cases");
+
+            worksheet['!cols'] = [
+                { wch: 40 },
+                { wch: 80 },
+                { wch: 35 },
+                { wch: 12 }
+            ];
+
+            XLSX.writeFile(workbook, 'Copilot_Team_Feedback_' + new Date().toISOString().split('T')[0] + '.xlsx');
+            showToast('✅ Excel file exported successfully!');
+        }
+    </script>
+</body>
+</html>
